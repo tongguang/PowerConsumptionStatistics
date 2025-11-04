@@ -1,0 +1,2 @@
+# PowerConsumptionStatistics
+安卓电流功耗统计APP
