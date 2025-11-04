@@ -29,13 +29,6 @@ Android 原生应用，通过悬浮窗实时显示手机功耗（电流、功率
 adb shell am start -n com.starlight.powerconsumptionstatistics/.MainActivity
 ```
 
-### 测试
-```bash
-./gradlew test                      # 运行所有单元测试
-./gradlew testDebugUnitTest         # 运行 Debug 单元测试
-./gradlew connectedAndroidTest      # 运行 Android 仪器测试
-```
-
 ### 代码检查
 ```bash
 ./gradlew lint           # 运行 Lint 检查
@@ -53,7 +46,6 @@ adb shell am start -n com.starlight.powerconsumptionstatistics/.MainActivity
   - ConstraintLayout 2.1.4
   - CardView 1.0.0（悬浮窗和卡片布局）
   - Preference KTX 1.2.1（设置页面）
-- **测试框架**: JUnit 4.13.2, Espresso 3.5.1
 
 ## 代码架构
 
@@ -87,8 +79,6 @@ app/
 │   │   └── drawable/
 │   │       └── ic_notification.xml        # 通知图标
 │   └── AndroidManifest.xml                # 应用清单（权限、服务声明）
-├── src/test/                              # 单元测试
-└── src/androidTest/                       # 仪器测试
 ```
 
 ### 架构说明
