@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="显示设置"
+        android:key="category_display">
+
+        <ListPreference
+            android:key="update_interval"
+            android:title="更新频率"
+            android:summary="控制数据刷新速度"
+            android:entries="@array/update_interval_entries"
+            android:entryValues="@array/update_interval_values"
+            android:defaultValue="1000"
+            android:icon="@android:drawable/ic_menu_recent_history" />
+
+        <SwitchPreferenceCompat
+            android:key="use_average_current"
+            android:title="使用平均电流"
+            android:summary="关闭时优先使用实时电流（部分设备不支持实时电流会自动使用平均电流）"
+            android:defaultValue="false"
+            android:icon="@android:drawable/ic_menu_manage" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="关于"
+        android:key="category_about">
+
+        <Preference
+            android:key="app_version"
+            android:title="应用版本"
+            android:summary="1.0.0"
+            android:selectable="false"
+            android:icon="@android:drawable/ic_menu_info_details" />
+
+        <Preference
+            android:key="developer"
+            android:title="开发者"
+            android:summary="Starlight"
+            android:selectable="false"
+            android:icon="@android:drawable/ic_menu_myplaces" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">功耗统计</string>
+
+    <!-- 更新频率选项 -->
+    <string-array name="update_interval_entries">
+        <item>快速 (0.5秒)</item>
+        <item>正常 (1秒)</item>
+        <item>省电 (2秒)</item>
+    </string-array>
+
+    <string-array name="update_interval_values">
+        <item>500</item>
+        <item>1000</item>
+        <item>2000</item>
+    </string-array>
+</resources>
