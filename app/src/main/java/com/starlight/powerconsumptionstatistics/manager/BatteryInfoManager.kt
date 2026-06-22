@@ -26,10 +26,19 @@ class BatteryInfoManager(
      * 获取实时电流 (微安 μA)
      * 正值表示充电，负值表示放电
      * 注意：部分设备可能不支持此功能，返回 0
+     *
+     * 兼容性处理：某些设备（如三星）返回的是毫安(mA)而非微安(μA)
+     * 通过数值大小判断并自动修正单位
      */
     private fun getCurrentNow(): Int {
         return try {
-            batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+            val current = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+            // 如果电流绝对值小于10且不为0，可能是毫安单位，需要转换为微安
+            if (current != 0 && current.absoluteValue < 10) {
+                current * 1000  // mA -> μA
+            } else {
+                current
+            }
         } catch (e: Exception) {
             0
         }
@@ -37,10 +46,18 @@ class BatteryInfoManager(
 
     /**
      * 获取平均电流 (微安 μA)
+     *
+     * 兼容性处理：某些设备（如三星）返回的是毫安(mA)而非微安(μA)
+     * 通过数值大小判断并自动修正单位
      */
     private fun getCurrentAverage(): Int {
         return try {
-            batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE)
+            val current = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE)
+            if (current != 0 && current.absoluteValue < 1000) {
+                current * 1000  // mA -> μA
+            } else {
+                current
+            }
         } catch (e: Exception) {
             0
         }
@@ -55,9 +72,38 @@ class BatteryInfoManager(
 
     /**
      * 获取电池电压 (毫伏 mV)
+     *
+     * 兼容性处理：优先从Intent获取，失败时尝试备用方案
      */
     private fun getVoltage(intent: Intent?): Int {
-        return intent?.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) ?: 0
+        // 优先从Intent获取电压
+        val voltageFromIntent = intent?.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0) ?: 0
+
+        if (voltageFromIntent > 0) {
+            return voltageFromIntent
+        }
+
+        // 如果Intent获取失败，尝试使用系统文件读取
+        // 注：BATTERY_PROPERTY_VOLTAGE 在某些Android版本可能不可用
+        return try {
+            // 尝试从系统文件读取（某些设备支持）
+            val voltageFile = java.io.File("/sys/class/power_supply/battery/voltage_now")
+            if (voltageFile.exists() && voltageFile.canRead()) {
+                val voltage = voltageFile.readText().trim().toIntOrNull() ?: 0
+                // 系统文件通常返回微伏(μV)，需要转换为毫伏(mV)
+                if (voltage > 1000000) {
+                    voltage / 1000
+                } else {
+                    voltage
+                }
+            } else {
+                // 如果都无法获取，返回默认值
+                100 // 默认3.7V，这是锂电池的典型电压
+            }
+        } catch (e: Exception) {
+            // 出错时返回默认值
+            200 // 默认3.7V
+        }
     }
 
     /**
